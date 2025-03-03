@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Eu4ng.GameInstance
+namespace Eu4ng.GameInstance.Editor
 {
     public class GameInstanceSettingsProvider : SettingsProvider
     {
@@ -42,7 +42,7 @@ namespace Eu4ng.GameInstance
                 // Automatically extract all keywords from the Styles.
                 var provider = new GameInstanceSettingsProvider("Project/Game Instance");
                 provider.keywords = GetSearchKeywordsFromGUIContentProperties<Styles>();
-                
+
                 return provider;
             }
 
