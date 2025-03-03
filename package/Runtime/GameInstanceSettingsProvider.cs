@@ -25,8 +25,12 @@ namespace Eu4ng.GameInstance
 
         public override void OnGUI(string searchContext)
         {
-            // Use IMGUI to display UI:
-            EditorGUILayout.PropertyField(GameInstanceSettings.GetSerializedSettings().FindProperty("m_SubsystemPrefabs"), Styles.SubsystemPrefabs);
+            var serializedSettings = GameInstanceSettings.GetSerializedSettings();
+            serializedSettings.Update();
+
+            EditorGUILayout.PropertyField(serializedSettings.FindProperty("m_SubsystemPrefabs"), Styles.SubsystemPrefabs);
+
+            serializedSettings.ApplyModifiedProperties();
         }
 
         // Register the SettingsProvider
@@ -35,10 +39,10 @@ namespace Eu4ng.GameInstance
         {
             if (IsSettingsAvailable())
             {
-                var provider = new GameInstanceSettingsProvider("Project/Game Instance");
-
                 // Automatically extract all keywords from the Styles.
+                var provider = new GameInstanceSettingsProvider("Project/Game Instance");
                 provider.keywords = GetSearchKeywordsFromGUIContentProperties<Styles>();
+                
                 return provider;
             }
 
