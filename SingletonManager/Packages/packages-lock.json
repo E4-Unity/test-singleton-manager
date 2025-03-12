@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.eu4ng.gameinstance": {
+    "com.eu4ng.manager.singleton": {
       "version": "file:../../package",
       "depth": 0,
       "source": "local",

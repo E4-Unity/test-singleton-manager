@@ -1,12 +1,8 @@
 {
-    "name": "Eu4ng.GameInstance.Editor",
-    "rootNamespace": "Eu4ng.GameInstance.Editor",
-    "references": [
-        "GUID:79cf0de3ee410494e920de5de3b2446e"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "name": "Eu4ng.Manager.Singleton",
+    "rootNamespace": "Eu4ng.Manager.Singleton",
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

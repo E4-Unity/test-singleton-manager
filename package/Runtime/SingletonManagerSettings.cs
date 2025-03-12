@@ -5,21 +5,21 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace Eu4ng.GameInstance
+namespace Eu4ng.Manager.Singleton
 {
-    public class GameInstanceSettings : ScriptableObject
+    public class SingletonManagerSettings : ScriptableObject
     {
-        private const string Path = "Assets/Resources/GameInstanceSettings.asset";
-        private static GameInstanceSettings Settings;
+        private const string Path = "Assets/Resources/SingletonManagerSettings.asset";
+        private static SingletonManagerSettings Settings;
 
 #if UNITY_EDITOR
         private static SerializedObject SerializedSettings;
 #endif
 
         [SerializeField]
-        public List<GameObject> m_SubsystemPrefabs;
+        public List<GameObject> m_SingletonPrefabs;
 
-        public static GameInstanceSettings GetOrCreateSettings()
+        public static SingletonManagerSettings GetOrCreateSettings()
         {
 #if UNITY_EDITOR
             return Settings ?? LoadSettings() ?? CreateSettings();
@@ -28,17 +28,17 @@ namespace Eu4ng.GameInstance
 #endif
         }
 
-        private static GameInstanceSettings LoadSettings()
+        private static SingletonManagerSettings LoadSettings()
         {
-            Settings = Resources.Load<GameInstanceSettings>("GameInstanceSettings");
+            Settings = Resources.Load<SingletonManagerSettings>("SingletonManagerSettings");
 
             return Settings;
         }
 
 #if UNITY_EDITOR
-        private static GameInstanceSettings CreateSettings()
+        private static SingletonManagerSettings CreateSettings()
         {
-            Settings = CreateInstance<GameInstanceSettings>();
+            Settings = CreateInstance<SingletonManagerSettings>();
             AssetDatabase.CreateAsset(Settings, Path);
             AssetDatabase.SaveAssets();
 
