@@ -6,30 +6,28 @@ namespace Eu4ng.Manager.Singleton
     {
         private static T s_Instance;
 
-        public static T Instance
+        public static T Instance => s_Instance ?? FindInstance() ?? CreateInstance();
+
+        private static T FindInstance()
         {
-            get
-            {
-                // 이미 등록된 경우
-                if (s_Instance != null) return s_Instance;
+            s_Instance = FindFirstObjectByType<T>();
 
-                // 씬에 존재하지만 등록되지 않은 경우
-                s_Instance = FindFirstObjectByType<T>();
-                if (s_Instance != null) return s_Instance;
+            return s_Instance;
+        }
 
-                // 씬에 존재하지도 않으며 등록되지도 않은 경우
-                var instance = new GameObject(typeof(T).Name);
-                s_Instance = instance.AddComponent<T>();
+        private static T CreateInstance()
+        {
+            var instance = new GameObject(typeof(T).Name);
+            s_Instance = instance.AddComponent<T>();
 
-                return s_Instance;
-            }
+            return s_Instance;
         }
 
         protected virtual void Awake()
         {
             var instance = GetComponent<T>();
 
-            if (s_Instance == null)
+            if (s_Instance is null)
             {
                 s_Instance = instance;
             }
