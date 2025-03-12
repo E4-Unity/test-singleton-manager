@@ -17,7 +17,9 @@ namespace Eu4ng.Manager.Singleton
 #endif
 
         [SerializeField]
-        public List<GameObject> m_SingletonPrefabs;
+        private List<GameObject> m_SingletonPrefabs;
+
+        public List<GameObject> SingletonPrefabs => m_SingletonPrefabs;
 
         public static SingletonManagerSettings GetOrCreateSettings()
         {
