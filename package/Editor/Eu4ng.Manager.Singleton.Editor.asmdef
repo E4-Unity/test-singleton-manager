@@ -1,0 +1,18 @@
+{
+    "name": "Eu4ng.Manager.Singleton.Editor",
+    "rootNamespace": "Eu4ng.Manager.Singleton.Editor",
+    "references": [
+        "GUID:c2becb15332ef2145b3d7c2149f8e3cb"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

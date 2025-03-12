@@ -1,0 +1,12 @@
+{
+    "name": "com.eu4ng.manager.singleton",
+    "displayName": "Singleton Manager",
+    "version": "0.1.0",
+    "unity": "6000.0",
+    "author": {
+        "name": "Eu4ng",
+        "email": "eu4ng97@gmail.com",
+        "url": "https://github.com/Eu4ng"
+    },
+    "description": "Singleton Manager"
+}
