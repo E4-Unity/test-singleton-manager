@@ -10,7 +10,7 @@ namespace Eu4ng.Manager.Singleton
     public class SingletonManagerSettings : ScriptableObject
     {
         private const string Path = "Assets/Resources/SingletonManagerSettings.asset";
-        private static SingletonManagerSettings Settings;
+        private static SingletonManagerSettings s_Instance;
 
 #if UNITY_EDITOR
         private static SerializedObject SerializedSettings;
@@ -21,35 +21,38 @@ namespace Eu4ng.Manager.Singleton
 
         public List<GameObject> SingletonPrefabs => m_SingletonPrefabs;
 
-        public static SingletonManagerSettings GetOrCreateSettings()
+        public static SingletonManagerSettings Instance
         {
+            get
+            {
 #if UNITY_EDITOR
-            return Settings ?? LoadSettings() ?? CreateSettings();
+                return s_Instance ?? LoadSettings() ?? CreateSettings();
 #else
-            return Settings ?? LoadSettings();
+                return s_Instance ?? LoadSettings();
 #endif
+            }
         }
 
         private static SingletonManagerSettings LoadSettings()
         {
-            Settings = Resources.Load<SingletonManagerSettings>("SingletonManagerSettings");
+            s_Instance = Resources.Load<SingletonManagerSettings>("SingletonManagerSettings");
 
-            return Settings;
+            return s_Instance;
         }
 
 #if UNITY_EDITOR
         private static SingletonManagerSettings CreateSettings()
         {
-            Settings = CreateInstance<SingletonManagerSettings>();
-            AssetDatabase.CreateAsset(Settings, Path);
+            s_Instance = CreateInstance<SingletonManagerSettings>();
+            AssetDatabase.CreateAsset(s_Instance, Path);
             AssetDatabase.SaveAssets();
 
-            return Settings;
+            return s_Instance;
         }
 
         public static SerializedObject GetSerializedSettings()
         {
-            return SerializedSettings ?? new SerializedObject(GetOrCreateSettings());
+            return SerializedSettings ?? new SerializedObject(Instance);
         }
 #endif
     }

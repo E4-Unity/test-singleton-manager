@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Eu4ng.Manager.Singleton
@@ -14,7 +13,7 @@ namespace Eu4ng.Manager.Singleton
         static void CreateGlobalSingletons()
         {
             // 프로젝트 설정 가져오기
-            var settings = SingletonManagerSettings.GetOrCreateSettings();
+            var settings = SingletonManagerSettings.Instance;
 
             // 싱글톤 매니저 오브젝트 생성
             var singletonManager = new GameObject("Singleton Manager");

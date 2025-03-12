@@ -15,7 +15,7 @@ namespace Eu4ng.Manager.Singleton.Editor
 
         public static bool IsSettingsAvailable()
         {
-            return SingletonManagerSettings.GetOrCreateSettings() is not null;
+            return SingletonManagerSettings.Instance is not null;
         }
 
         public override void OnActivate(string searchContext, VisualElement rootElement)
