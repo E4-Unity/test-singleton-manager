@@ -10,16 +10,8 @@ namespace Eu4ng.Manager.Singleton
     public class SingletonManagerSettings : ScriptableObject
     {
         private const string Path = "Assets/Resources/SingletonManagerSettings.asset";
+
         private static SingletonManagerSettings s_Instance;
-
-#if UNITY_EDITOR
-        private static SerializedObject SerializedSettings;
-#endif
-
-        [SerializeField]
-        private List<GameObject> m_SingletonPrefabs;
-
-        public List<GameObject> SingletonPrefabs => m_SingletonPrefabs;
 
         public static SingletonManagerSettings Instance
         {
@@ -32,6 +24,16 @@ namespace Eu4ng.Manager.Singleton
 #endif
             }
         }
+
+#if UNITY_EDITOR
+        private static SerializedObject s_SerializedSettings;
+
+        public static SerializedObject SerializedSettings => s_SerializedSettings ?? new SerializedObject(Instance);
+#endif
+
+        [SerializeField] private List<GameObject> m_SingletonPrefabs;
+
+        public List<GameObject> SingletonPrefabs => m_SingletonPrefabs;
 
         private static SingletonManagerSettings LoadSettings()
         {
@@ -48,11 +50,6 @@ namespace Eu4ng.Manager.Singleton
             AssetDatabase.SaveAssets();
 
             return s_Instance;
-        }
-
-        public static SerializedObject GetSerializedSettings()
-        {
-            return SerializedSettings ?? new SerializedObject(Instance);
         }
 #endif
     }
