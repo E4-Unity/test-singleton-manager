@@ -44,7 +44,7 @@ namespace Eu4ng.Manager.Singleton
         {
             if (IsInitialized) return;
 
-            Debug.Log(typeof(T).Name + " is initialized.");
+            LogSingletonManager.Log(typeof(T).Name + " is initialized.");
             IsInitialized = true;
             OnInitialize();
         }
@@ -64,7 +64,7 @@ namespace Eu4ng.Manager.Singleton
             else if (s_Instance != instance)
             {
                 Destroy(gameObject);
-                Debug.LogWarning(gameObject.name + " is destroyed.\n" + s_Instance.gameObject.name + " (" + typeof(T).Name + ")" + " is already exist.");
+                LogSingletonManager.LogWarning(gameObject.name + " is destroyed.\n" + s_Instance.gameObject.name + " (" + typeof(T).Name + ")" + " is already exist.");
             }
         }
 
