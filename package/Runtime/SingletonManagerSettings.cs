@@ -13,6 +13,10 @@ namespace Eu4ng.Manager.Singleton
 
         public List<GameObject> SingletonPrefabs => m_SingletonPrefabs;
 
+        [SerializeReference] private ScenePrefabsMappingConfig m_ScenePrefabsMappingConfig;
+
+        public Dictionary<int, List<GameObject>> ScenePrefabsDictionary => m_ScenePrefabsMappingConfig == null ? new Dictionary<int, List<GameObject>>() : m_ScenePrefabsMappingConfig.ScenePrefabsDictionary;
+
 #if UNITY_EDITOR
         private static SerializedObject s_SerializedSettings;
 
