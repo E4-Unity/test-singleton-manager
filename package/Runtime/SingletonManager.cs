@@ -11,7 +11,7 @@ namespace Eu4ng.Manager.Singleton
     /// MonoSingleton 클래스를 상속받은 싱글톤 컴포넌트가 부착된 프리팹들만 등록하는 것을 권장드리지만,
     /// 현재는 어떤 종류의 프리팹을 등록해도 동일한 방식으로 동작합니다.
     /// </summary>
-    public class SingletonManager : MonoBehaviour
+    public class SingletonManager : MonoSingleton<SingletonManager>
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void OnBeforeSceneLoaded()
@@ -26,6 +26,7 @@ namespace Eu4ng.Manager.Singleton
 
             // 싱글톤 매니저 오브젝트 생성
             var singletonManager = new GameObject("Singleton Manager");
+            singletonManager.AddComponent<SingletonManager>();
             DontDestroyOnLoad(singletonManager);
 
             // Global Config에 등록된 프리팹 싱글톤 객체 생성

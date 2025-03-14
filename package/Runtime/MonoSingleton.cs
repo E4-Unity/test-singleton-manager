@@ -60,6 +60,7 @@ namespace Eu4ng.Manager.Singleton
             if (s_Instance is null)
             {
                 s_Instance = instance;
+                Initialize();
             }
             else if (s_Instance != instance)
             {
