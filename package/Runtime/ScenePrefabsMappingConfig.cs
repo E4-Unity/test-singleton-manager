@@ -23,19 +23,22 @@ namespace Eu4ng.Manager.Singleton
     {
         [SerializeField] List<ScenePrefabsMappingData<T>> m_ScenePrefabList = new List<ScenePrefabsMappingData<T>>();
 
-        readonly Dictionary<int, List<GameObject>> m_ScenePrefabDictionary = new Dictionary<int, List<GameObject>>();
+        Dictionary<int, List<GameObject>> m_ScenePrefabDictionary = new Dictionary<int, List<GameObject>>();
 
-        public override Dictionary<int, List<GameObject>> ScenePrefabsDictionary => m_ScenePrefabDictionary;
-
-#if UNITY_EDITOR
-        protected virtual void OnValidate()
+        public override Dictionary<int, List<GameObject>> ScenePrefabsDictionary
         {
-            m_ScenePrefabDictionary.Clear();
-            foreach (var scenePrefabsMappingData in m_ScenePrefabList)
+            get
             {
-                m_ScenePrefabDictionary.TryAdd(Convert.ToInt32(scenePrefabsMappingData.BuildIndex), scenePrefabsMappingData.Prefabs);
+                if (m_ScenePrefabDictionary.Count == 0)
+                {
+                    foreach (var scenePrefabsMappingData in m_ScenePrefabList)
+                    {
+                        m_ScenePrefabDictionary.TryAdd(Convert.ToInt32(scenePrefabsMappingData.BuildIndex), scenePrefabsMappingData.Prefabs);
+                    }
+                }
+
+                return m_ScenePrefabDictionary;
             }
         }
-#endif
     }
 }
