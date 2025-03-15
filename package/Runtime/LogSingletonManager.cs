@@ -1,16 +1,20 @@
+using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Callbacks;
+using UnityEditorInternal;
 #endif
 
 namespace Eu4ng.Manager.Singleton
 {
     public static class LogSingletonManager
     {
-#if UNITY_EDITOR && LOG_SINGLETONMANAGER
+#if LOG_SINGLETONMANAGER
         public static void Log(object message)
         {
             Debug.Log(message);
@@ -101,7 +105,8 @@ namespace Eu4ng.Manager.Singleton
             Debug.AssertFormat(condition, context, message, args);
         }
 
-        [UnityEditor.Callbacks.OnOpenAsset()]
+#if UNITY_EDITOR
+        [OnOpenAsset()]
         private static bool OnOpenDebugLog(int instance, int line)
         {
             string name = EditorUtility.InstanceIDToObject(instance).name;
@@ -138,14 +143,15 @@ namespace Eu4ng.Manager.Singleton
                 string path = match.Groups[1].Value;
                 var split = path.Split(':');
                 string filePath = split[0];
-                int lineNum = System.Convert.ToInt32(split[1]);
+                int lineNum = Convert.ToInt32(split[1]);
 
-                string dataPath = UnityEngine.Application.dataPath.Substring(0, UnityEngine.Application.dataPath.LastIndexOf("Assets"));
-                UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(dataPath + filePath, lineNum);
+                string dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("Assets"));
+                InternalEditorUtility.OpenFileAtLineExternal(dataPath + filePath, lineNum);
                 return true;
             }
             return false;
         }
+#endif
 #else
         public static void Log(object message) {}
         public static void Log(object message, Object context) {}
