@@ -33,6 +33,8 @@ namespace Eu4ng.Manager.Singleton
 
         List<GameObject> m_ScenePrefabInstances = new List<GameObject>();
 
+        int m_CurrentBuildIndex = -1;
+
         /* MonoSingleton */
 
         protected override void OnInitialize()
@@ -71,7 +73,13 @@ namespace Eu4ng.Manager.Singleton
 
         void OnActiveSceneChanged(Scene currentScene, Scene nextScene)
         {
-            // 현재 씬 전용 프리팹 인스턴스 파괴
+            DestroyScenePrefabs();
+
+            CreateScenePrefabs(nextScene.buildIndex);
+        }
+
+        void DestroyScenePrefabs()
+        {
             foreach (var scenePrefabInstance in m_ScenePrefabInstances)
             {
                 Destroy(scenePrefabInstance);
@@ -79,10 +87,16 @@ namespace Eu4ng.Manager.Singleton
                 LogSingletonManager.Log("Scene Prefab (" + scenePrefabInstance.name + ") is destroyed.");
             }
             m_ScenePrefabInstances.Clear();
+        }
 
-            // 다음 씬 전용 프리팹 인스턴스 생성
+        void CreateScenePrefabs(int buildIndex)
+        {
+            LogSingletonManager.Log("Create scene prefabs for " + buildIndex + ".");
+
+            m_CurrentBuildIndex = buildIndex;
+
             var settings = SingletonManagerSettings.Instance;
-            var scenePrefabs = settings.GetScenePrefabs(nextScene.buildIndex);
+            var scenePrefabs = settings.GetScenePrefabs(buildIndex);
             foreach (var scenePrefab in scenePrefabs)
             {
                 var scenePrefabInstance = Instantiate(scenePrefab, m_ScenePrefabsRoot.transform);
