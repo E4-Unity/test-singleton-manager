@@ -7,50 +7,22 @@ using UnityEditor;
 
 namespace Eu4ng.Manager.Singleton
 {
-    public class SingletonManagerSettings : ScriptableObject
+    public class SingletonManagerSettings : DeveloperSettings<SingletonManagerSettings>
     {
-        private const string Path = "Assets/Resources/SingletonManagerSettings.asset";
+        [SerializeField] private List<GameObject> m_GlobalPrefabs = new List<GameObject>();
 
-        private static SingletonManagerSettings s_Instance;
+        public List<GameObject> GlobalPrefabs => m_GlobalPrefabs;
 
-        public static SingletonManagerSettings Instance
-        {
-            get
-            {
-#if UNITY_EDITOR
-                return s_Instance ?? LoadSettings() ?? CreateSettings();
-#else
-                return s_Instance ?? LoadSettings();
-#endif
-            }
-        }
+        [SerializeReference] private ScenePrefabsMappingConfig m_ScenePrefabsMappingConfig;
+
+        public Dictionary<int, List<GameObject>> ScenePrefabsDictionary => m_ScenePrefabsMappingConfig == null ? new Dictionary<int, List<GameObject>>() : m_ScenePrefabsMappingConfig.ScenePrefabsDictionary;
+
+        public List<GameObject> GetScenePrefabs(int buildIndex) => ScenePrefabsDictionary.GetValueOrDefault(buildIndex, new List<GameObject>());
 
 #if UNITY_EDITOR
         private static SerializedObject s_SerializedSettings;
 
         public static SerializedObject SerializedSettings => s_SerializedSettings ?? new SerializedObject(Instance);
-#endif
-
-        [SerializeField] private List<GameObject> m_SingletonPrefabs;
-
-        public List<GameObject> SingletonPrefabs => m_SingletonPrefabs;
-
-        private static SingletonManagerSettings LoadSettings()
-        {
-            s_Instance = Resources.Load<SingletonManagerSettings>("SingletonManagerSettings");
-
-            return s_Instance;
-        }
-
-#if UNITY_EDITOR
-        private static SingletonManagerSettings CreateSettings()
-        {
-            s_Instance = CreateInstance<SingletonManagerSettings>();
-            AssetDatabase.CreateAsset(s_Instance, Path);
-            AssetDatabase.SaveAssets();
-
-            return s_Instance;
-        }
 #endif
     }
 }

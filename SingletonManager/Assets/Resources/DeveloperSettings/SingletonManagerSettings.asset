@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 155d399953c215a429faddc98a0bfb89, type: 3}
+  m_Name: SingletonManagerSettings
+  m_EditorClassIdentifier: 
+  m_GlobalPrefabs:
+  - {fileID: 4301749514229693320, guid: 24dc28dfd87aff040a80a0f75c33c002, type: 3}
+  m_ScenePrefabsMappingConfig: {fileID: 11400000, guid: 627e3e26bff902347a44a7683f427c40, type: 2}
