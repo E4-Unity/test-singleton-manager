@@ -59,13 +59,16 @@ namespace Eu4ng.Manager.Singleton
 
             if (s_Instance is null)
             {
+                LogSingletonManager.Log(typeof(T).Name + " is created.");
+
                 s_Instance = instance;
                 Initialize();
             }
             else if (s_Instance != instance)
             {
+                LogSingletonManager.Log(typeof(T).Name + " is already exists.");
+
                 Destroy(gameObject);
-                LogSingletonManager.LogWarning(gameObject.name + " is destroyed.\n" + s_Instance.gameObject.name + " (" + typeof(T).Name + ")" + " is already exist.");
             }
         }
 
@@ -83,7 +86,12 @@ namespace Eu4ng.Manager.Singleton
 
         protected virtual void OnDestroy()
         {
-            if (s_Instance == GetComponent<T>()) s_Instance = null;
+            if (s_Instance == GetComponent<T>())
+            {
+                s_Instance = null;
+
+                LogSingletonManager.Log(typeof(T).Name + " is destroyed.");
+            }
         }
     }
 }

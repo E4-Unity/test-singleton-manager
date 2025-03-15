@@ -23,7 +23,6 @@ namespace Eu4ng.Manager.Singleton
 
         static void CreateSingletonManager()
         {
-            LogSingletonManager.Log("Create " + nameof(SingletonManager));
             var root = new GameObject("Singleton Manager");
             var singletonManager = root.AddComponent<SingletonManager>();
         }
@@ -63,8 +62,10 @@ namespace Eu4ng.Manager.Singleton
             // 설정에 등록된 Global Prefabs 생성
             foreach (var globalPrefab in settings.GlobalPrefabs)
             {
-                LogSingletonManager.Log("Create " + nameof(globalPrefab));
                 var globalPrefabInstance = Instantiate(globalPrefab, m_GlobalPrefabsRoot.transform);
+                globalPrefabInstance.name = globalPrefab.name;
+
+                LogSingletonManager.Log("Global Prefab (" + globalPrefabInstance.name + ") is created.");
             }
         }
 
@@ -74,6 +75,8 @@ namespace Eu4ng.Manager.Singleton
             foreach (var scenePrefabInstance in m_ScenePrefabInstances)
             {
                 Destroy(scenePrefabInstance);
+
+                LogSingletonManager.Log("Scene Prefab (" + scenePrefabInstance.name + ") is destroyed.");
             }
             m_ScenePrefabInstances.Clear();
 
@@ -83,7 +86,10 @@ namespace Eu4ng.Manager.Singleton
             foreach (var scenePrefab in scenePrefabs)
             {
                 var scenePrefabInstance = Instantiate(scenePrefab, m_ScenePrefabsRoot.transform);
+                scenePrefabInstance.name = scenePrefab.name;
                 m_ScenePrefabInstances.Add(scenePrefabInstance);
+
+                LogSingletonManager.Log("Scene Prefab (" + scenePrefabInstance.name + ") is created.");
             }
         }
     }
