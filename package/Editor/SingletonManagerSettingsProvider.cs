@@ -30,7 +30,7 @@ namespace Eu4ng.Manager.Singleton.Editor
             var serializedSettings = SingletonManagerSettings.SerializedSettings;
             serializedSettings.Update();
 
-            EditorGUILayout.PropertyField(serializedSettings.FindProperty("m_SingletonPrefabs"), Styles.SingletonPrefabs);
+            EditorGUILayout.PropertyField(serializedSettings.FindProperty("m_GlobalPrefabs"), Styles.SingletonPrefabs);
             EditorGUILayout.PropertyField(serializedSettings.FindProperty("m_ScenePrefabsMappingConfig"), Styles.ScenePrefabConfig);
 
             serializedSettings.ApplyModifiedProperties();
