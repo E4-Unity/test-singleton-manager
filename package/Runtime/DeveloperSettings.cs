@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
-using Directory = UnityEngine.Windows.Directory;
+using System.IO;
 
 #if UNITY_EDITOR
-using System.IO;
 using UnityEditor;
 #endif
 
