@@ -9,13 +9,15 @@ namespace Eu4ng.Manager.Singleton
 {
     public class SingletonManagerSettings : DeveloperSettings<SingletonManagerSettings>
     {
-        [SerializeField] private List<GameObject> m_SingletonPrefabs = new List<GameObject>();
+        [SerializeField] private List<GameObject> m_GlobalPrefabs = new List<GameObject>();
 
-        public List<GameObject> SingletonPrefabs => m_SingletonPrefabs;
+        public List<GameObject> GlobalPrefabs => m_GlobalPrefabs;
 
         [SerializeReference] private ScenePrefabsMappingConfig m_ScenePrefabsMappingConfig;
 
         public Dictionary<int, List<GameObject>> ScenePrefabsDictionary => m_ScenePrefabsMappingConfig == null ? new Dictionary<int, List<GameObject>>() : m_ScenePrefabsMappingConfig.ScenePrefabsDictionary;
+
+        public List<GameObject> GetScenePrefabs(int buildIndex) => ScenePrefabsDictionary.GetValueOrDefault(buildIndex, new List<GameObject>());
 
 #if UNITY_EDITOR
         private static SerializedObject s_SerializedSettings;

@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Eu4ng.Manager.Singleton
 {
@@ -16,23 +18,72 @@ namespace Eu4ng.Manager.Singleton
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void OnBeforeSceneLoaded()
         {
-            CreateGlobalSingletons();
+            CreateSingletonManager();
         }
 
-        static void CreateGlobalSingletons()
+        static void CreateSingletonManager()
         {
-            // 프로젝트 설정 가져오기
+            LogSingletonManager.Log("Create " + nameof(SingletonManager));
+            var root = new GameObject("Singleton Manager");
+            var singletonManager = root.AddComponent<SingletonManager>();
+        }
+
+        GameObject m_GlobalPrefabsRoot;
+
+        GameObject m_ScenePrefabsRoot;
+
+        List<GameObject> m_ScenePrefabInstances = new List<GameObject>();
+
+        /* MonoSingleton */
+
+        protected override void OnInitialize()
+        {
+            base.OnInitialize();
+
+            DontDestroyOnLoad(gameObject);
+
+            m_GlobalPrefabsRoot = new GameObject("Global Prefabs");
+            m_GlobalPrefabsRoot.transform.SetParent(gameObject.transform);
+
+            m_ScenePrefabsRoot = new GameObject("Scene Prefabs");
+            m_ScenePrefabsRoot.transform.SetParent(gameObject.transform);
+
+            CreateGlobalPrefabs();
+
+            SceneManager.activeSceneChanged += OnActiveSceneChanged;
+        }
+
+        /* SingletonManager */
+
+        void CreateGlobalPrefabs()
+        {
+            // 설정 가져오기
             var settings = SingletonManagerSettings.Instance;
 
-            // 싱글톤 매니저 오브젝트 생성
-            var singletonManager = new GameObject("Singleton Manager");
-            singletonManager.AddComponent<SingletonManager>();
-            DontDestroyOnLoad(singletonManager);
-
-            // Global Config에 등록된 프리팹 싱글톤 객체 생성
-            foreach (var singletonPrefab in settings.SingletonPrefabs)
+            // 설정에 등록된 Global Prefabs 생성
+            foreach (var globalPrefab in settings.GlobalPrefabs)
             {
-                var singleton = Instantiate(singletonPrefab, singletonManager.transform);
+                LogSingletonManager.Log("Create " + nameof(globalPrefab));
+                var globalPrefabInstance = Instantiate(globalPrefab, m_GlobalPrefabsRoot.transform);
+            }
+        }
+
+        void OnActiveSceneChanged(Scene currentScene, Scene nextScene)
+        {
+            // 현재 씬 전용 프리팹 인스턴스 파괴
+            foreach (var scenePrefabInstance in m_ScenePrefabInstances)
+            {
+                Destroy(scenePrefabInstance);
+            }
+            m_ScenePrefabInstances.Clear();
+
+            // 다음 씬 전용 프리팹 인스턴스 생성
+            var settings = SingletonManagerSettings.Instance;
+            var scenePrefabs = settings.GetScenePrefabs(nextScene.buildIndex);
+            foreach (var scenePrefab in scenePrefabs)
+            {
+                var scenePrefabInstance = Instantiate(scenePrefab, m_ScenePrefabsRoot.transform);
+                m_ScenePrefabInstances.Add(scenePrefabInstance);
             }
         }
     }
