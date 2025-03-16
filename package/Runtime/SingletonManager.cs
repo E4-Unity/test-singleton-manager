@@ -23,6 +23,8 @@ namespace Eu4ng.Manager.Singleton
 
         static void CreateSingletonManager()
         {
+            LogSingletonManager.Log("Create SingletonManager");
+
             var root = new GameObject("Singleton Manager");
             var singletonManager = root.AddComponent<SingletonManager>();
         }
@@ -39,8 +41,6 @@ namespace Eu4ng.Manager.Singleton
 
         protected override void OnInitialize()
         {
-            base.OnInitialize();
-
             DontDestroyOnLoad(gameObject);
 
             m_GlobalPrefabsRoot = new GameObject("Global Prefabs");

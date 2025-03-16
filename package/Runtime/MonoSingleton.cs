@@ -3,44 +3,44 @@ using UnityEngine;
 namespace Eu4ng.Manager.Singleton
 {
     /// <summary>
-    /// MonoBehaviour 기반의 제네릭 싱글톤 클래스입니다.
-    /// Instance 프로퍼티 호출 시 초기화 완료 상태를 보장합니다.
+    /// MonoBehaviour를 상속받은 제네릭 싱글톤 클래스
     /// </summary>
-    public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
+    public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
     {
-        private static T s_Instance;
+        static T s_Instance;
 
-        public static T Instance
-        {
-            get
-            {
-                var instance = s_Instance ?? FindInstance() ?? CreateInstance();
-                instance.Initialize();
+        public static T Instance => s_Instance ?? FindInstance() ?? CreateInstance();
 
-                return instance;
-            }
-        }
-
-        public bool IsInitialized { get; private set; }
+        bool IsInitialized { get; set; }
 
         /* MonoSingleton */
 
-        private static T FindInstance()
+        static T FindInstance()
         {
             s_Instance = FindFirstObjectByType<T>();
+            if (s_Instance != null)
+            {
+                LogSingletonManager.Log(typeof(T).Name + " is found.");
+
+                s_Instance.Initialize();
+            }
 
             return s_Instance;
         }
 
-        private static T CreateInstance()
+        static T CreateInstance()
         {
             var instance = new GameObject(typeof(T).Name);
             s_Instance = instance.AddComponent<T>();
 
+            LogSingletonManager.Log(typeof(T).Name + " is created.");
+
+            s_Instance.Initialize();
+
             return s_Instance;
         }
 
-        private void Initialize()
+        void Initialize()
         {
             if (IsInitialized) return;
 
@@ -49,7 +49,7 @@ namespace Eu4ng.Manager.Singleton
             OnInitialize();
         }
 
-        protected virtual void OnInitialize() {}
+        protected abstract void OnInitialize();
 
         /* MonoBehaviour */
 
@@ -59,7 +59,7 @@ namespace Eu4ng.Manager.Singleton
 
             if (s_Instance is null)
             {
-                LogSingletonManager.Log(typeof(T).Name + " is created.");
+                LogSingletonManager.Log(typeof(T).Name + " is awoken.");
 
                 s_Instance = instance;
                 Initialize();
