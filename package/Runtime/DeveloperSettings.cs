@@ -9,10 +9,10 @@ namespace Eu4ng.Manager.Singleton
 {
     public abstract class DeveloperSettings<T> : ScriptableObject where T : DeveloperSettings<T>
     {
-        private const string RESOURCES_PATH = "Assets/Resources";
-        private const string SETTINGS_PATH = "DeveloperSettings";
+        const string RESOURCES_PATH = "Assets/Resources";
+        const string SETTINGS_PATH = "DeveloperSettings";
 
-        private static T s_Instance;
+        static T s_Instance;
 
         public static T Instance
         {
@@ -26,7 +26,18 @@ namespace Eu4ng.Manager.Singleton
             }
         }
 
-        private static string GetDirectory(string path)
+        bool IsInitialized { get; set; }
+
+        void Initialize()
+        {
+            if (IsInitialized) return;
+
+            OnInitialize();
+        }
+
+        protected abstract void OnInitialize();
+
+        static string GetDirectory(string path)
         {
             string directory = string.Empty;
             string[] folders = path.Split('/');
@@ -38,18 +49,23 @@ namespace Eu4ng.Manager.Singleton
             return directory;
         }
 
-        private static T LoadScriptableObject()
+        static T LoadScriptableObject()
         {
             string directory = GetDirectory(SETTINGS_PATH);
 
             s_Instance = Resources.Load<T>(Path.Combine(directory, typeof(T).Name));
-            if (s_Instance != null) LogSingletonManager.Log(typeof(T).Name + " is loaded.");
+            if (s_Instance != null)
+            {
+                LogSingletonManager.Log(typeof(T).Name + " is loaded.");
+
+                s_Instance.Initialize();
+            }
 
             return s_Instance;
         }
 
 #if UNITY_EDITOR
-        private static T CreateScriptableObject()
+        static T CreateScriptableObject()
         {
             // 폴더 생성
             string directory = CreateDirectory(RESOURCES_PATH + "/" + SETTINGS_PATH);
@@ -61,10 +77,12 @@ namespace Eu4ng.Manager.Singleton
 
             LogSingletonManager.Log(typeof(T).Name + " is created.");
 
+            s_Instance.Initialize();
+
             return s_Instance;
         }
 
-        private static string CreateDirectory(string path)
+        static string CreateDirectory(string path)
         {
             string directory = string.Empty;
             string[] folders = path.Split('/');
