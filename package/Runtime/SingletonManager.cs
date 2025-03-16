@@ -80,6 +80,8 @@ namespace Eu4ng.Manager.Singleton
 
         void DestroyScenePrefabs()
         {
+            LogSingletonManager.Log("Destroy scene prefabs for " + m_CurrentBuildIndex + ".");
+
             foreach (var scenePrefabInstance in m_ScenePrefabInstances)
             {
                 Destroy(scenePrefabInstance);
