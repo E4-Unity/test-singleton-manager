@@ -8,7 +8,7 @@ public enum SampleSceneType
 }
 
 [CreateAssetMenu(fileName = "SampleScenePrefabsConfig", menuName = "Scriptable Objects/SingletonManager/SampleScenePrefabsConfig")]
-public class SampleScenePrefabsConfig : ScenePrefabsMappingConfig<SampleSceneType>
+public class SampleScenePrefabsConfig : ScenePrefabsConfig<SampleSceneType>
 {
 
 }
