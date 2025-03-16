@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 029b7cb2c7868eb4eb4e468ac506cb46, type: 3}
   m_Name: SampleScenePrefabsConfig
   m_EditorClassIdentifier: 
-  m_ScenePrefabList:
+  m_ScenePrefabsList:
   - BuildIndex: 0
     Prefabs:
     - {fileID: 4301749514229693320, guid: 92be026dfb6173744bbee859d55de111, type: 3}

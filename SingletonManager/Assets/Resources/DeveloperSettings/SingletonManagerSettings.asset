@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GlobalPrefabs:
   - {fileID: 4301749514229693320, guid: 24dc28dfd87aff040a80a0f75c33c002, type: 3}
-  m_ScenePrefabsMappingConfig: {fileID: 11400000, guid: 627e3e26bff902347a44a7683f427c40, type: 2}
+  m_ScenePrefabsConfig: {fileID: 11400000, guid: 627e3e26bff902347a44a7683f427c40, type: 2}

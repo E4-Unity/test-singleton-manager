@@ -13,9 +13,9 @@ namespace Eu4ng.Manager.Singleton
 
         public List<GameObject> GlobalPrefabs => m_GlobalPrefabs;
 
-        [SerializeReference] private ScenePrefabsMappingConfig m_ScenePrefabsMappingConfig;
+        [SerializeReference] private ScenePrefabsConfig m_ScenePrefabsConfig;
 
-        public Dictionary<int, List<GameObject>> ScenePrefabsDictionary => m_ScenePrefabsMappingConfig == null ? new Dictionary<int, List<GameObject>>() : m_ScenePrefabsMappingConfig.ScenePrefabsDictionary;
+        public Dictionary<int, List<GameObject>> ScenePrefabsDictionary => m_ScenePrefabsConfig == null ? new Dictionary<int, List<GameObject>>() : m_ScenePrefabsConfig.ScenePrefabsDictionary;
 
         public List<GameObject> GetScenePrefabs(int buildIndex) => ScenePrefabsDictionary.GetValueOrDefault(buildIndex, new List<GameObject>());
 

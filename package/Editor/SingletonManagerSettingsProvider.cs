@@ -8,9 +8,9 @@ namespace Eu4ng.Manager.Singleton.Editor
     {
         class Styles
         {
-            public static GUIContent SingletonPrefabs = new GUIContent("Singleton Prefabs");
+            public static GUIContent GlobalPrefabs = new GUIContent("Global Prefabs");
 
-            public static GUIContent ScenePrefabConfig = new GUIContent("ScenePrefab Config");
+            public static GUIContent ScenePrefabsConfig = new GUIContent("Scene Prefabs Config");
         }
         public SingletonManagerSettingsProvider(string path, SettingsScope scope = SettingsScope.Project)
             : base(path, scope) {}
@@ -30,8 +30,8 @@ namespace Eu4ng.Manager.Singleton.Editor
             var serializedSettings = SingletonManagerSettings.SerializedSettings;
             serializedSettings.Update();
 
-            EditorGUILayout.PropertyField(serializedSettings.FindProperty("m_GlobalPrefabs"), Styles.SingletonPrefabs);
-            EditorGUILayout.PropertyField(serializedSettings.FindProperty("m_ScenePrefabsMappingConfig"), Styles.ScenePrefabConfig);
+            EditorGUILayout.PropertyField(serializedSettings.FindProperty("m_GlobalPrefabs"), Styles.GlobalPrefabs);
+            EditorGUILayout.PropertyField(serializedSettings.FindProperty("m_ScenePrefabsConfig"), Styles.ScenePrefabsConfig);
 
             serializedSettings.ApplyModifiedProperties();
         }
