@@ -2,6 +2,7 @@
     "name": "Eu4ng.Manager.Singleton",
     "rootNamespace": "Eu4ng.Manager.Singleton",
     "references": [
+        "GUID:6ebc61a948085e64fb3662bdc27fc9fb",
         "GUID:14b273445bc39c44cadaac491b57291a"
     ],
     "includePlatforms": [],
