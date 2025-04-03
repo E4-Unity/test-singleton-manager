@@ -2,16 +2,50 @@ using UnityEngine;
 
 namespace Eu4ng.Manager.Singleton
 {
+    public abstract class MonoSingleton : MonoBehaviour
+    {
+        bool IsInitialized { get; set; }
+
+        /* MonoSingleton */
+
+        public void Initialize()
+        {
+            if (IsInitialized) return;
+
+            LogSingletonManager.Log(gameObject.name + " is initialized.");
+            IsInitialized = true;
+            OnInitialize();
+        }
+
+        protected abstract void OnInitialize();
+
+        /* MonoBehaviour */
+
+        protected virtual void Awake() {}
+
+        protected virtual void OnEnable() {}
+
+        protected virtual void Start() {}
+
+        protected virtual void FixedUpdate() {}
+
+        protected virtual void Update() {}
+
+        protected virtual void LateUpdate() {}
+
+        protected virtual void OnDisable() {}
+
+        protected virtual void OnDestroy() {}
+    }
+
     /// <summary>
     /// MonoBehaviour를 상속받은 제네릭 싱글톤 클래스
     /// </summary>
-    public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
+    public abstract class MonoSingleton<T> : MonoSingleton where T : MonoSingleton
     {
         static T s_Instance;
 
         public static T Instance => s_Instance ?? FindInstance() ?? CreateInstance();
-
-        bool IsInitialized { get; set; }
 
         /* MonoSingleton */
 
@@ -40,21 +74,12 @@ namespace Eu4ng.Manager.Singleton
             return s_Instance;
         }
 
-        void Initialize()
-        {
-            if (IsInitialized) return;
-
-            LogSingletonManager.Log(typeof(T).Name + " is initialized.");
-            IsInitialized = true;
-            OnInitialize();
-        }
-
-        protected abstract void OnInitialize();
-
         /* MonoBehaviour */
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             var instance = GetComponent<T>();
 
             if (s_Instance is null)
@@ -72,19 +97,7 @@ namespace Eu4ng.Manager.Singleton
             }
         }
 
-        protected virtual void OnEnable() {}
-
-        protected virtual void Start() {}
-
-        protected virtual void FixedUpdate() {}
-
-        protected virtual void Update() {}
-
-        protected virtual void LateUpdate() {}
-
-        protected virtual void OnDisable() {}
-
-        protected virtual void OnDestroy()
+        protected override void OnDestroy()
         {
             if (s_Instance == GetComponent<T>())
             {
@@ -92,6 +105,8 @@ namespace Eu4ng.Manager.Singleton
 
                 LogSingletonManager.Log(typeof(T).Name + " is destroyed.");
             }
+
+            base.OnDestroy();
         }
     }
 }
