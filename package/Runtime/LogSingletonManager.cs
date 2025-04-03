@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -109,6 +110,11 @@ namespace Eu4ng.Manager.Singleton
             Debug.AssertFormat(condition, context, LOG_PREFIX + message, args);
         }
 
+        public static void LogMethodName([CallerMemberName] string methodName = null)
+        {
+            Log(methodName);
+        }
+
 #if UNITY_EDITOR
         [OnOpenAsset(0)]
         private static bool OnOpenDebugLog(int instance, int line)
@@ -175,6 +181,7 @@ namespace Eu4ng.Manager.Singleton
         public static void Assert(bool condition, Object context) {}
         public static void AssertFormat(bool condition, string message, params object[] args) {}
         public static void AssertFormat(bool condition, Object context, string message, params object[] args) {}
+        public static void LogMethodName([CallerMemberName] string methodName = null) {}
 #endif
     }
 }
