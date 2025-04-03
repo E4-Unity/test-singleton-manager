@@ -1,21 +1,15 @@
+using Eu4ng.Utilities;
 using UnityEngine;
 
 namespace Eu4ng.Manager.Singleton
 {
     public abstract class MonoSingleton : MonoBehaviour
     {
-        bool IsInitialized { get; set; }
+        [field: SerializeField, ReadOnly] protected bool IsInitialized { get; set; }
 
         /* MonoSingleton */
 
-        public void Initialize()
-        {
-            if (IsInitialized) return;
-
-            LogSingletonManager.Log(gameObject.name + " is initialized.");
-            IsInitialized = true;
-            OnInitialize();
-        }
+        public abstract void Initialize();
 
         protected abstract void OnInitialize();
 
@@ -53,27 +47,39 @@ namespace Eu4ng.Manager.Singleton
 
         static T FindInstance()
         {
-            s_Instance = FindFirstObjectByType<T>();
-            if (s_Instance != null)
-            {
-                LogSingletonManager.Log(typeof(T).Name + " is found.");
+            // Find
+            var instance = FindFirstObjectByType<T>();
+            if (instance is null) return null;
 
-                s_Instance.Initialize();
-            }
+            // Initialize
+            LogSingletonManager.Log(typeof(T).Name + " is found.");
+            instance.Initialize();
 
-            return s_Instance;
+            return instance;
         }
 
         static T CreateInstance()
         {
-            var instance = new GameObject(typeof(T).Name);
-            s_Instance = instance.AddComponent<T>();
+            // Create
+            var gameObject = new GameObject(typeof(T).Name);
+            var instance = gameObject.AddComponent<T>();
 
+            // Initialize
             LogSingletonManager.Log(typeof(T).Name + " is created.");
+            instance.Initialize();
 
-            s_Instance.Initialize();
+            return instance;
+        }
 
-            return s_Instance;
+        public override void Initialize()
+        {
+            if (IsInitialized) return;
+
+            IsInitialized = true;
+            s_Instance = this as T;
+            OnInitialize();
+
+            LogSingletonManager.Log(gameObject.name + " is initialized.");
         }
 
         /* MonoBehaviour */
@@ -82,13 +88,15 @@ namespace Eu4ng.Manager.Singleton
         {
             base.Awake();
 
+            // Subsystem should be initialized manually
+            if (IsSubsystem) return;
+
             var instance = GetComponent<T>();
 
             if (s_Instance is null)
             {
                 LogSingletonManager.Log(typeof(T).Name + " is awoken.");
 
-                s_Instance = instance;
                 Initialize();
             }
             else if (s_Instance != instance)
