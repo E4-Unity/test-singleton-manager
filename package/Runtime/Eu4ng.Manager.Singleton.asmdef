@@ -1,7 +1,9 @@
 {
     "name": "Eu4ng.Manager.Singleton",
     "rootNamespace": "Eu4ng.Manager.Singleton",
-    "references": [],
+    "references": [
+        "GUID:14b273445bc39c44cadaac491b57291a"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
