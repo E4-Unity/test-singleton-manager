@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.IO;
 
 #if UNITY_EDITOR
@@ -10,8 +11,8 @@ namespace Eu4ng.Manager.Singleton
 {
     public abstract class DeveloperSettings : ScriptableObject
     {
-        public const string RESOURCES_PATH = "Assets/Resources";
-        public const string SETTINGS_PATH = "DeveloperSettings";
+        protected const string RESOURCES_PATH = "Assets/Resources";
+        protected const string SETTINGS_PATH = "DeveloperSettings";
 
         protected bool IsInitialized { get; set; }
 
@@ -23,54 +24,46 @@ namespace Eu4ng.Manager.Singleton
         }
 
         protected abstract void OnInitialize();
+
+#if UNITY_EDITOR
+        public static void CreateDeveloperSettings(Type type)
+        {
+            // 유효성 검사
+            if (type is null) return;
+
+            // 이미 생성된 경우 무시
+            var loadedDeveloperSettings = Resources.Load(Path.Combine(SETTINGS_PATH, type.Name));
+            if (loadedDeveloperSettings is not null) return;
+
+            // 폴더 생성
+            string directory = DirectoryManager.CreateDirectory(RESOURCES_PATH + "/" + SETTINGS_PATH);
+
+            // 스크립터블 오브젝트 생성
+            var instance = CreateInstance(type);
+            AssetDatabase.CreateAsset(instance, Path.Combine(directory, type.Name + ".asset"));
+            AssetDatabase.SaveAssets();
+
+            LogSingletonManager.Log(type.Name + " is created.");
+        }
+#endif
     }
 
     public abstract class DeveloperSettings<T> : DeveloperSettings where T : DeveloperSettings<T>
     {
         static T s_Instance;
 
-        public static T Instance
-        {
-            get
-            {
-#if UNITY_EDITOR
-                return s_Instance ?? LoadScriptableObject() ?? CreateScriptableObject();
-#else
-                return s_Instance ?? LoadScriptableObject();
-#endif
-            }
-        }
+        public static T Instance => s_Instance ?? LoadScriptableObject();
 
         static T LoadScriptableObject()
         {
             s_Instance = Resources.Load<T>(Path.Combine(SETTINGS_PATH, typeof(T).Name));
-            if (s_Instance != null)
-            {
-                LogSingletonManager.Log(typeof(T).Name + " is loaded.");
-
-                s_Instance.Initialize();
-            }
-
-            return s_Instance;
-        }
 
 #if UNITY_EDITOR
-        static T CreateScriptableObject()
-        {
-            // 폴더 생성
-            string directory = DirectoryManager.CreateDirectory(RESOURCES_PATH + "/" + SETTINGS_PATH);
-
-            // 스크립터블 오브젝트 생성
-            s_Instance = CreateInstance<T>();
-            AssetDatabase.CreateAsset(s_Instance, Path.Combine(directory, typeof(T).Name + ".asset"));
-            AssetDatabase.SaveAssets();
-
-            LogSingletonManager.Log(typeof(T).Name + " is created.");
-
-            s_Instance.Initialize();
+            if (s_Instance is null) CreateDeveloperSettings(typeof(T));
+            s_Instance = Resources.Load<T>(Path.Combine(SETTINGS_PATH, typeof(T).Name));
+#endif
 
             return s_Instance;
         }
-#endif
     }
 }
