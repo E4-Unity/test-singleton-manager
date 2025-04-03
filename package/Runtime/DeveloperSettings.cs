@@ -3,6 +3,7 @@ using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using Eu4ng.Utilities.Editor;
 #endif
 
 namespace Eu4ng.Manager.Singleton
@@ -22,37 +23,6 @@ namespace Eu4ng.Manager.Singleton
         }
 
         protected abstract void OnInitialize();
-
-        protected static string GetDirectory(string path)
-        {
-            string directory = string.Empty;
-            string[] folders = path.Split('/');
-            foreach (string folder in folders)
-            {
-                directory = Path.Combine(directory, folder);
-            }
-
-            return directory;
-        }
-
-#if UNITY_EDITOR
-        protected static string CreateDirectory(string path)
-        {
-            string directory = string.Empty;
-            string[] folders = path.Split('/');
-            foreach (string folder in folders)
-            {
-                directory = Path.Combine(directory, folder);
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                    LogSingletonManager.Log("Directory(" + directory + ") is created.");
-                }
-            }
-
-            return directory;
-        }
-#endif
     }
 
     public abstract class DeveloperSettings<T> : DeveloperSettings where T : DeveloperSettings<T>
@@ -73,9 +43,7 @@ namespace Eu4ng.Manager.Singleton
 
         static T LoadScriptableObject()
         {
-            string directory = GetDirectory(SETTINGS_PATH);
-
-            s_Instance = Resources.Load<T>(Path.Combine(directory, typeof(T).Name));
+            s_Instance = Resources.Load<T>(Path.Combine(SETTINGS_PATH, typeof(T).Name));
             if (s_Instance != null)
             {
                 LogSingletonManager.Log(typeof(T).Name + " is loaded.");
@@ -90,7 +58,7 @@ namespace Eu4ng.Manager.Singleton
         static T CreateScriptableObject()
         {
             // 폴더 생성
-            string directory = CreateDirectory(RESOURCES_PATH + "/" + SETTINGS_PATH);
+            string directory = DirectoryManager.CreateDirectory(RESOURCES_PATH + "/" + SETTINGS_PATH);
 
             // 스크립터블 오브젝트 생성
             s_Instance = CreateInstance<T>();
