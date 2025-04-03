@@ -36,22 +36,25 @@ namespace Eu4ng.Manager.Singleton
             var root = new GameObject("Subsystems");
             root.transform.SetParent(transform);
 
-            foreach (var monoSingletonClass in GetAllMonoSingletonClasses())
+            foreach (var monoSingletonClass in GetMonoSingletonClasses())
             {
-                if (!monoSingletonClass.IsSubsystem) continue;
-
-                var subsystem = new GameObject(monoSingletonClass.GetType().Name);
-                subsystem.AddComponent(monoSingletonClass.GetType());
-                subsystem.transform.SetParent(root.transform);
+                var subsystem = new GameObject(monoSingletonClass.Name);
+                if (subsystem.AddComponent(monoSingletonClass) is MonoSingleton { IsSubsystem: true })
+                {
+                    subsystem.transform.SetParent(root.transform);
+                }
+                else
+                {
+                    Destroy(subsystem);
+                }
             }
         }
 
-        IEnumerable<MonoSingleton> GetAllMonoSingletonClasses()
+        static IEnumerable<Type> GetMonoSingletonClasses()
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
-                .Where(type => type.IsSubclassOf(typeof(MonoSingleton)) && !type.IsAbstract)
-                .Select(type => Activator.CreateInstance(type) as MonoSingleton);
+                .Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(MonoSingleton)) && type != typeof(SingletonManager));
         }
 
         GameObject m_GlobalPrefabsRoot;
