@@ -1,0 +1,16 @@
+{
+    "name": "Eu4ng.Manager.Singleton.Sample",
+    "rootNamespace": "Eu4ng.Manager.Singleton.Sample",
+    "references": [
+        "GUID:c2becb15332ef2145b3d7c2149f8e3cb"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
