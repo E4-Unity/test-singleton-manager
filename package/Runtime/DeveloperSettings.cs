@@ -16,12 +16,7 @@ namespace Eu4ng.Manager.Singleton
 
         protected bool IsInitialized { get; set; }
 
-        protected void Initialize()
-        {
-            if (IsInitialized) return;
-
-            OnInitialize();
-        }
+        protected abstract void Initialize();
 
         protected abstract void OnInitialize();
 
@@ -63,7 +58,22 @@ namespace Eu4ng.Manager.Singleton
             s_Instance = Resources.Load<T>(Path.Combine(SETTINGS_PATH, typeof(T).Name));
 #endif
 
+            LogSingletonManager.Log(typeof(T).Name + " is loaded.");
+
+            s_Instance.Initialize();
+
             return s_Instance;
+        }
+
+        protected override void Initialize()
+        {
+            if (IsInitialized) return;
+
+            IsInitialized = true;
+            s_Instance = this as T;
+            OnInitialize();
+
+            LogSingletonManager.Log(typeof(T).Name + " is initialized.");
         }
     }
 }
