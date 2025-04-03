@@ -31,34 +31,34 @@ namespace Eu4ng.Manager.Singleton
             var singletonManager = root.AddComponent<SingletonManager>();
         }
 
-        void CreateSubsystems()
+        static void CreateSubsystems()
         {
             LogSingletonManager.LogMethodName();
 
             var root = new GameObject("Subsystems");
-            root.transform.SetParent(transform);
+            root.transform.SetParent(Instance.transform);
 
-            foreach (var monoSingletonClass in GetMonoSingletonClasses())
+            foreach (var gameSubsystemClass in GetGameSubsystemClasses())
             {
-                var monoSingletonGameObject = new GameObject(monoSingletonClass.Name);
-                if (monoSingletonGameObject.AddComponent(monoSingletonClass) is MonoSingleton { IsSubsystem: true } monoSingleton)
+                var gameObject = new GameObject(gameSubsystemClass.Name);
+                LogSingletonManager.Log(gameObject.name + " is created.");
+                if (gameObject.AddComponent(gameSubsystemClass) is GameSubsystem gameSubsystem)
                 {
-                    monoSingletonGameObject.transform.SetParent(root.transform);
-                    LogSingletonManager.Log(monoSingletonGameObject.name + "is created.");
-                    monoSingleton.Initialize();
+                    gameSubsystem.Initialize();
+                    gameObject.transform.SetParent(root.transform);
                 }
                 else
                 {
-                    Destroy(monoSingletonGameObject);
+                    Destroy(gameObject);
                 }
             }
         }
 
-        static IEnumerable<Type> GetMonoSingletonClasses()
+        static IEnumerable<Type> GetGameSubsystemClasses()
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
-                .Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(MonoSingleton)) && type != typeof(SingletonManager));
+                .Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(GameSubsystem)));
         }
 
         GameObject m_GlobalPrefabsRoot;

@@ -13,8 +13,6 @@ namespace Eu4ng.Manager.Singleton
 
         protected abstract void OnInitialize();
 
-        public virtual bool IsSubsystem => false;
-
         /* MonoBehaviour */
 
         protected virtual void Awake() {}
@@ -79,7 +77,7 @@ namespace Eu4ng.Manager.Singleton
             s_Instance = this as T;
             OnInitialize();
 
-            LogSingletonManager.Log(gameObject.name + " is initialized.");
+            LogSingletonManager.Log(typeof(T).Name + " is initialized.");
         }
 
         /* MonoBehaviour */
@@ -88,18 +86,13 @@ namespace Eu4ng.Manager.Singleton
         {
             base.Awake();
 
-            // Subsystem should be initialized manually
-            if (IsSubsystem) return;
-
-            var instance = GetComponent<T>();
-
             if (s_Instance is null)
             {
                 LogSingletonManager.Log(typeof(T).Name + " is awoken.");
 
                 Initialize();
             }
-            else if (s_Instance != instance)
+            else if (s_Instance != this as T)
             {
                 LogSingletonManager.Log(typeof(T).Name + " is already exists.");
 
@@ -109,7 +102,7 @@ namespace Eu4ng.Manager.Singleton
 
         protected override void OnDestroy()
         {
-            if (s_Instance == GetComponent<T>())
+            if (s_Instance == this as T)
             {
                 s_Instance = null;
 
