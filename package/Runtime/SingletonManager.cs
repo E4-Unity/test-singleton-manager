@@ -25,7 +25,7 @@ namespace Eu4ng.Manager.Singleton
 
         static void CreateSingletonManager()
         {
-            LogSingletonManager.Log("Create SingletonManager");
+            LogSingletonManager.LogMethodName();
 
             var root = new GameObject("Singleton Manager");
             var singletonManager = root.AddComponent<SingletonManager>();
@@ -33,6 +33,8 @@ namespace Eu4ng.Manager.Singleton
 
         void CreateSubsystems()
         {
+            LogSingletonManager.LogMethodName();
+
             var root = new GameObject("Subsystems");
             root.transform.SetParent(transform);
 
