@@ -44,6 +44,7 @@ namespace Eu4ng.Manager.Singleton
                 if (subsystem.AddComponent(monoSingletonClass) is MonoSingleton { IsSubsystem: true })
                 {
                     subsystem.transform.SetParent(root.transform);
+                    LogSingletonManager.Log(subsystem.name + "is created.");
                 }
                 else
                 {
