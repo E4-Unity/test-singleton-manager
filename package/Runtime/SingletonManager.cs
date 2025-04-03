@@ -40,15 +40,16 @@ namespace Eu4ng.Manager.Singleton
 
             foreach (var monoSingletonClass in GetMonoSingletonClasses())
             {
-                var subsystem = new GameObject(monoSingletonClass.Name);
-                if (subsystem.AddComponent(monoSingletonClass) is MonoSingleton { IsSubsystem: true })
+                var monoSingletonGameObject = new GameObject(monoSingletonClass.Name);
+                if (monoSingletonGameObject.AddComponent(monoSingletonClass) is MonoSingleton { IsSubsystem: true } monoSingleton)
                 {
-                    subsystem.transform.SetParent(root.transform);
-                    LogSingletonManager.Log(subsystem.name + "is created.");
+                    monoSingletonGameObject.transform.SetParent(root.transform);
+                    LogSingletonManager.Log(monoSingletonGameObject.name + "is created.");
+                    monoSingleton.Initialize();
                 }
                 else
                 {
-                    Destroy(subsystem);
+                    Destroy(monoSingletonGameObject);
                 }
             }
         }
