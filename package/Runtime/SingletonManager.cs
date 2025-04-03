@@ -69,6 +69,15 @@ namespace Eu4ng.Manager.Singleton
 
         int m_CurrentBuildIndex = -1;
 
+        /* MonoBehaviour */
+
+        protected override void OnDestroy()
+        {
+            if (IsInitialized) SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+
+            base.OnDestroy();
+        }
+
         /* MonoSingleton */
 
         protected override void OnInitialize()
