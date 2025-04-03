@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,10 +25,40 @@ namespace Eu4ng.Manager.Singleton
 
         static void CreateSingletonManager()
         {
-            LogSingletonManager.Log("Create SingletonManager");
+            LogSingletonManager.LogMethodName();
 
             var root = new GameObject("Singleton Manager");
             var singletonManager = root.AddComponent<SingletonManager>();
+        }
+
+        static void CreateSubsystems()
+        {
+            LogSingletonManager.LogMethodName();
+
+            var root = new GameObject("Subsystems");
+            root.transform.SetParent(Instance.transform);
+
+            foreach (var gameSubsystemClass in GetGameSubsystemClasses())
+            {
+                var gameObject = new GameObject(gameSubsystemClass.Name);
+                LogSingletonManager.Log(gameObject.name + " is created.");
+                if (gameObject.AddComponent(gameSubsystemClass) is GameSubsystem gameSubsystem)
+                {
+                    gameSubsystem.Initialize();
+                    gameObject.transform.SetParent(root.transform);
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
+            }
+        }
+
+        static IEnumerable<Type> GetGameSubsystemClasses()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(assembly => assembly.GetTypes())
+                .Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(GameSubsystem)));
         }
 
         GameObject m_GlobalPrefabsRoot;
@@ -37,11 +69,22 @@ namespace Eu4ng.Manager.Singleton
 
         int m_CurrentBuildIndex = -1;
 
+        /* MonoBehaviour */
+
+        protected override void OnDestroy()
+        {
+            if (IsInitialized) SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+
+            base.OnDestroy();
+        }
+
         /* MonoSingleton */
 
         protected override void OnInitialize()
         {
             DontDestroyOnLoad(gameObject);
+
+            CreateSubsystems();
 
             m_GlobalPrefabsRoot = new GameObject("Global Prefabs");
             m_GlobalPrefabsRoot.transform.SetParent(gameObject.transform);
@@ -73,6 +116,7 @@ namespace Eu4ng.Manager.Singleton
 
         void OnActiveSceneChanged(Scene currentScene, Scene nextScene)
         {
+            LogSingletonManager.Log("Active Scene Changed: " + currentScene.buildIndex + " > " + nextScene.buildIndex);
             DestroyScenePrefabs();
 
             CreateScenePrefabs(nextScene.buildIndex);

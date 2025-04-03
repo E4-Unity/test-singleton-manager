@@ -1,103 +1,79 @@
 using UnityEngine;
+using System;
 using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using Eu4ng.Utilities.Editor;
 #endif
 
 namespace Eu4ng.Manager.Singleton
 {
-    public abstract class DeveloperSettings<T> : ScriptableObject where T : DeveloperSettings<T>
+    public abstract class DeveloperSettings : ScriptableObject
     {
-        const string RESOURCES_PATH = "Assets/Resources";
-        const string SETTINGS_PATH = "DeveloperSettings";
+        protected const string RESOURCES_PATH = "Assets/Resources";
+        protected const string SETTINGS_PATH = "DeveloperSettings";
 
-        static T s_Instance;
+        protected bool IsInitialized { get; set; }
 
-        public static T Instance
-        {
-            get
-            {
-#if UNITY_EDITOR
-                return s_Instance ?? LoadScriptableObject() ?? CreateScriptableObject();
-#else
-                return s_Instance ?? LoadScriptableObject();
-#endif
-            }
-        }
-
-        bool IsInitialized { get; set; }
-
-        void Initialize()
-        {
-            if (IsInitialized) return;
-
-            OnInitialize();
-        }
+        protected abstract void Initialize();
 
         protected abstract void OnInitialize();
 
-        static string GetDirectory(string path)
+#if UNITY_EDITOR
+        public static void CreateDeveloperSettings(Type type)
         {
-            string directory = string.Empty;
-            string[] folders = path.Split('/');
-            foreach (string folder in folders)
-            {
-                directory = Path.Combine(directory, folder);
-            }
+            // 유효성 검사
+            if (type is null) return;
 
-            return directory;
+            // 이미 생성된 경우 무시
+            var loadedDeveloperSettings = Resources.Load(Path.Combine(SETTINGS_PATH, type.Name));
+            if (loadedDeveloperSettings is not null) return;
+
+            // 폴더 생성
+            string directory = DirectoryManager.CreateDirectory(RESOURCES_PATH + "/" + SETTINGS_PATH);
+
+            // 스크립터블 오브젝트 생성
+            var instance = CreateInstance(type);
+            AssetDatabase.CreateAsset(instance, Path.Combine(directory, type.Name + ".asset"));
+            AssetDatabase.SaveAssets();
+
+            LogSingletonManager.Log(type.Name + " is created.");
         }
+#endif
+    }
+
+    public abstract class DeveloperSettings<T> : DeveloperSettings where T : DeveloperSettings<T>
+    {
+        static T s_Instance;
+
+        public static T Instance => s_Instance ?? LoadScriptableObject();
 
         static T LoadScriptableObject()
         {
-            string directory = GetDirectory(SETTINGS_PATH);
-
-            s_Instance = Resources.Load<T>(Path.Combine(directory, typeof(T).Name));
-            if (s_Instance != null)
-            {
-                LogSingletonManager.Log(typeof(T).Name + " is loaded.");
-
-                s_Instance.Initialize();
-            }
-
-            return s_Instance;
-        }
+            s_Instance = Resources.Load<T>(Path.Combine(SETTINGS_PATH, typeof(T).Name));
 
 #if UNITY_EDITOR
-        static T CreateScriptableObject()
-        {
-            // 폴더 생성
-            string directory = CreateDirectory(RESOURCES_PATH + "/" + SETTINGS_PATH);
+            if (s_Instance is null) CreateDeveloperSettings(typeof(T));
+            s_Instance = Resources.Load<T>(Path.Combine(SETTINGS_PATH, typeof(T).Name));
+#endif
 
-            // 스크립터블 오브젝트 생성
-            s_Instance = CreateInstance<T>();
-            AssetDatabase.CreateAsset(s_Instance, Path.Combine(directory, typeof(T).Name + ".asset"));
-            AssetDatabase.SaveAssets();
-
-            LogSingletonManager.Log(typeof(T).Name + " is created.");
+            LogSingletonManager.Log(typeof(T).Name + " is loaded.");
 
             s_Instance.Initialize();
 
             return s_Instance;
         }
 
-        static string CreateDirectory(string path)
+        protected override void Initialize()
         {
-            string directory = string.Empty;
-            string[] folders = path.Split('/');
-            foreach (string folder in folders)
-            {
-                directory = Path.Combine(directory, folder);
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                    LogSingletonManager.Log("Directory(" + directory + ") is created.");
-                }
-            }
+            if (IsInitialized) return;
 
-            return directory;
+            IsInitialized = true;
+            s_Instance = this as T;
+            OnInitialize();
+
+            LogSingletonManager.Log(typeof(T).Name + " is initialized.");
         }
-#endif
     }
 }

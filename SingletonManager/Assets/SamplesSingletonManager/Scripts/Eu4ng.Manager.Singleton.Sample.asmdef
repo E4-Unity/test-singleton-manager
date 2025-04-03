@@ -1,13 +1,10 @@
 {
-    "name": "Eu4ng.Manager.Singleton.Editor",
-    "rootNamespace": "Eu4ng.Manager.Singleton.Editor",
+    "name": "Eu4ng.Manager.Singleton.Sample",
+    "rootNamespace": "Eu4ng.Manager.Singleton.Sample",
     "references": [
-        "GUID:c2becb15332ef2145b3d7c2149f8e3cb",
-        "GUID:14b273445bc39c44cadaac491b57291a"
+        "GUID:c2becb15332ef2145b3d7c2149f8e3cb"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

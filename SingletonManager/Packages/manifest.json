@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.eu4ng.manager.singleton": "file:../../package",
+    "com.eu4ng.utilities": "https://github.com/E4-Unity/com.eu4ng.utilities.git?path=/package#v0.1.1",
     "com.unity.ai.navigation": "2.0.6",
     "com.unity.collab-proxy": "2.7.1",
     "com.unity.feature.development": "1.0.2",
