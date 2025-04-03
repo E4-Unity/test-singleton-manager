@@ -7,11 +7,56 @@ using UnityEditor;
 
 namespace Eu4ng.Manager.Singleton
 {
-    public abstract class DeveloperSettings<T> : ScriptableObject where T : DeveloperSettings<T>
+    public abstract class DeveloperSettings : ScriptableObject
     {
-        const string RESOURCES_PATH = "Assets/Resources";
-        const string SETTINGS_PATH = "DeveloperSettings";
+        protected const string RESOURCES_PATH = "Assets/Resources";
+        protected const string SETTINGS_PATH = "DeveloperSettings";
 
+        protected bool IsInitialized { get; set; }
+
+        protected void Initialize()
+        {
+            if (IsInitialized) return;
+
+            OnInitialize();
+        }
+
+        protected abstract void OnInitialize();
+
+        protected static string GetDirectory(string path)
+        {
+            string directory = string.Empty;
+            string[] folders = path.Split('/');
+            foreach (string folder in folders)
+            {
+                directory = Path.Combine(directory, folder);
+            }
+
+            return directory;
+        }
+
+#if UNITY_EDITOR
+        protected static string CreateDirectory(string path)
+        {
+            string directory = string.Empty;
+            string[] folders = path.Split('/');
+            foreach (string folder in folders)
+            {
+                directory = Path.Combine(directory, folder);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                    LogSingletonManager.Log("Directory(" + directory + ") is created.");
+                }
+            }
+
+            return directory;
+        }
+#endif
+    }
+
+    public abstract class DeveloperSettings<T> : DeveloperSettings where T : DeveloperSettings<T>
+    {
         static T s_Instance;
 
         public static T Instance
@@ -24,29 +69,6 @@ namespace Eu4ng.Manager.Singleton
                 return s_Instance ?? LoadScriptableObject();
 #endif
             }
-        }
-
-        bool IsInitialized { get; set; }
-
-        void Initialize()
-        {
-            if (IsInitialized) return;
-
-            OnInitialize();
-        }
-
-        protected abstract void OnInitialize();
-
-        static string GetDirectory(string path)
-        {
-            string directory = string.Empty;
-            string[] folders = path.Split('/');
-            foreach (string folder in folders)
-            {
-                directory = Path.Combine(directory, folder);
-            }
-
-            return directory;
         }
 
         static T LoadScriptableObject()
@@ -80,23 +102,6 @@ namespace Eu4ng.Manager.Singleton
             s_Instance.Initialize();
 
             return s_Instance;
-        }
-
-        static string CreateDirectory(string path)
-        {
-            string directory = string.Empty;
-            string[] folders = path.Split('/');
-            foreach (string folder in folders)
-            {
-                directory = Path.Combine(directory, folder);
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                    LogSingletonManager.Log("Directory(" + directory + ") is created.");
-                }
-            }
-
-            return directory;
         }
 #endif
     }
