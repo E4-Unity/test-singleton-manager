@@ -19,6 +19,8 @@ namespace Eu4ng.Manager.Singleton
 
         protected abstract void OnInitialize();
 
+        public virtual bool IsSubsystem => false;
+
         /* MonoBehaviour */
 
         protected virtual void Awake() {}

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,6 +31,29 @@ namespace Eu4ng.Manager.Singleton
             var singletonManager = root.AddComponent<SingletonManager>();
         }
 
+        void CreateSubsystems()
+        {
+            var root = new GameObject("Subsystems");
+            root.transform.SetParent(transform);
+
+            foreach (var monoSingletonClass in GetAllMonoSingletonClasses())
+            {
+                if (!monoSingletonClass.IsSubsystem) continue;
+
+                var subsystem = new GameObject(monoSingletonClass.GetType().Name);
+                subsystem.AddComponent(monoSingletonClass.GetType());
+                subsystem.transform.SetParent(root.transform);
+            }
+        }
+
+        IEnumerable<MonoSingleton> GetAllMonoSingletonClasses()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(assembly => assembly.GetTypes())
+                .Where(type => type.IsSubclassOf(typeof(MonoSingleton)) && !type.IsAbstract)
+                .Select(type => Activator.CreateInstance(type) as MonoSingleton);
+        }
+
         GameObject m_GlobalPrefabsRoot;
 
         GameObject m_ScenePrefabsRoot;
@@ -42,6 +67,8 @@ namespace Eu4ng.Manager.Singleton
         protected override void OnInitialize()
         {
             DontDestroyOnLoad(gameObject);
+
+            CreateSubsystems();
 
             m_GlobalPrefabsRoot = new GameObject("Global Prefabs");
             m_GlobalPrefabsRoot.transform.SetParent(gameObject.transform);
