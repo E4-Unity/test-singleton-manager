@@ -107,6 +107,7 @@ namespace Eu4ng.Manager.Singleton
 
         void OnActiveSceneChanged(Scene currentScene, Scene nextScene)
         {
+            LogSingletonManager.Log("Active Scene Changed: " + currentScene.buildIndex + " > " + nextScene.buildIndex);
             DestroyScenePrefabs();
 
             CreateScenePrefabs(nextScene.buildIndex);
