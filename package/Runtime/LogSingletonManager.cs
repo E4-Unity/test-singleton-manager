@@ -14,65 +14,69 @@ namespace Eu4ng.Manager.Singleton
 {
     public static class LogSingletonManager
     {
-#if LOG_SINGLETONMANAGER
+#if LOG_SINGLETON_MANAGER
+        const string LOG_CATEGORY = nameof(LogSingletonManager);
+        const string LOG_PREFIX = LOG_CATEGORY + ": ";
+
+        // ReSharper disable Unity.PerformanceAnalysis
         public static void Log(object message)
         {
-            Debug.Log(message);
+            Debug.Log(LOG_PREFIX + message);
         }
 
         public static void Log(object message, Object context)
         {
-            Debug.Log(message, context);
+            Debug.Log(LOG_PREFIX + message, context);
         }
 
         public static void LogFormat(string message, params object[] args)
         {
-            Debug.LogFormat(message, args);
+            Debug.LogFormat(LOG_PREFIX + message, args);
         }
 
         public static void LogFormat(Object context, string message, params object[] args)
         {
-            Debug.LogFormat(context, message, args);
+            Debug.LogFormat(LOG_PREFIX + context, message, args);
         }
 
         public static void LogWarning(object message)
         {
-            Debug.LogWarning(message);
+            Debug.LogWarning(LOG_PREFIX + message);
         }
 
         public static void LogWarning(object message, Object context)
         {
-            Debug.LogWarning(message, context);
+            Debug.LogWarning(LOG_PREFIX + message, context);
         }
 
         public static void LogWarningFormat(string message, params object[] args)
         {
-            Debug.LogWarningFormat(message, args);
+            Debug.LogWarningFormat(LOG_PREFIX + message, args);
         }
 
         public static void LogWarningFormat(Object context, string message, params object[] args)
         {
-            Debug.LogWarningFormat(context, message, args);
+            Debug.LogWarningFormat(context, LOG_PREFIX + message, args);
         }
 
         public static void LogError(object message)
         {
-            Debug.LogError(message);
+            Debug.LogError(LOG_PREFIX + message);
         }
 
         public static void LogError(object message, Object context)
         {
-            Debug.LogError(message, context);
+            Debug.LogError(LOG_PREFIX + message, context);
         }
 
         public static void LogErrorFormat(string message, params object[] args)
         {
-            Debug.LogErrorFormat(message, args);
+            Debug.LogErrorFormat(LOG_PREFIX + message, args);
         }
 
         public static void LogErrorFormat(Object context, string message, params object[] args)
         {
-            Debug.LogErrorFormat(context, message, args);
+            Debug.LogErrorFormat(context, LOG_PREFIX + message, args);
         }
 
         public static void LogException(System.Exception exception)
@@ -97,20 +101,20 @@ namespace Eu4ng.Manager.Singleton
 
         public static void AssertFormat(bool condition, string message, params object[] args)
         {
-            Debug.AssertFormat(condition, message, args);
+            Debug.AssertFormat(condition, LOG_PREFIX + message, args);
         }
 
         public static void AssertFormat(bool condition, Object context, string message, params object[] args)
         {
-            Debug.AssertFormat(condition, context, message, args);
+            Debug.AssertFormat(condition, context, LOG_PREFIX + message, args);
         }
 
 #if UNITY_EDITOR
-        [OnOpenAsset()]
+        [OnOpenAsset(0)]
         private static bool OnOpenDebugLog(int instance, int line)
         {
             string name = EditorUtility.InstanceIDToObject(instance).name;
-            if (!name.Equals("Debug")) return false;
+            if (!name.Equals(nameof(LogSingletonManager))) return false;
 
             // 에디터 콘솔 윈도우의 인스턴스를 찾는다.
             var assembly = Assembly.GetAssembly(typeof(EditorWindow));
@@ -142,11 +146,11 @@ namespace Eu4ng.Manager.Singleton
             {
                 string path = match.Groups[1].Value;
                 var split = path.Split(':');
-                string filePath = split[0];
-                int lineNum = Convert.ToInt32(split[1]);
+                string drivePath = split[0];
+                string filePath = split[1];
+                int lineNum = Convert.ToInt32(split[2]);
 
-                string dataPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("Assets"));
-                InternalEditorUtility.OpenFileAtLineExternal(dataPath + filePath, lineNum);
+                InternalEditorUtility.OpenFileAtLineExternal(drivePath + ':' + filePath, lineNum);
                 return true;
             }
             return false;
