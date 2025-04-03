@@ -4,7 +4,9 @@
       "version": "file:../../package",
       "depth": 0,
       "source": "local",
-      "dependencies": {}
+      "dependencies": {
+        "com.eu4ng.utilities": "https://github.com/E4-Unity/com.eu4ng.utilities.git?path=/package#v0.1.1"
+      }
     },
     "com.eu4ng.utilities": {
       "version": "https://github.com/E4-Unity/com.eu4ng.utilities.git?path=/package#v0.1.1",

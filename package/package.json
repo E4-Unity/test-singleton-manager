@@ -1,12 +1,15 @@
 {
     "name": "com.eu4ng.manager.singleton",
     "displayName": "Singleton Manager",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "unity": "6000.0",
     "author": {
         "name": "Eu4ng",
         "email": "eu4ng97@gmail.com",
         "url": "https://github.com/Eu4ng"
     },
-    "description": "Singleton Manager"
+    "description": "Singleton Manager",
+    "dependencies": {
+        "com.eu4ng.utilities": "https://github.com/E4-Unity/com.eu4ng.utilities.git?path=/package#v0.1.1"
+    }
 }
