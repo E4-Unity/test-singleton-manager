@@ -10,8 +10,8 @@ namespace Eu4ng.Manager.Singleton
 {
     public abstract class DeveloperSettings : ScriptableObject
     {
-        protected const string RESOURCES_PATH = "Assets/Resources";
-        protected const string SETTINGS_PATH = "DeveloperSettings";
+        public const string RESOURCES_PATH = "Assets/Resources";
+        public const string SETTINGS_PATH = "DeveloperSettings";
 
         protected bool IsInitialized { get; set; }
 
